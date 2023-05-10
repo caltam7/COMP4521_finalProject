@@ -12,6 +12,15 @@
         android:theme="@style/Theme.CDAR"
         tools:targetApi="31">
         <activity
+            android:name=".DayScheduleActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DashboardActivity"
+            android:exported="false" />
+        <activity
+            android:name=".LoginActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
