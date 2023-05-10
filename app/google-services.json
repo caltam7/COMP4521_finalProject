@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "735804405595",
+    "project_id": "comp4521project-smartcalendar",
+    "storage_bucket": "comp4521project-smartcalendar.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:735804405595:android:dbce0f9b9f85790a2d8c7e",
+        "android_client_info": {
+          "package_name": "com.comp4521.cdar"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "735804405595-0p3d6g89rgoin19osr5gfqdat70ajmi1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBxgy54XTWFf5Kh9sa7C68J6KilhuvX2-4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "735804405595-0p3d6g89rgoin19osr5gfqdat70ajmi1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
