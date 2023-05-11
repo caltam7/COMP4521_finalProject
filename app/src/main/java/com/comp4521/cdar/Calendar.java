@@ -5,15 +5,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class Calendar {
-    private String title;
+    private String cid, title;
     private List<User> clients;
     private List<User> resourcesAdmins;
     private List<User> serviceProviders;
     private Map<Integer, List<Event>> calendar;
 
-    public Calendar(String title, List<User> clients, List<User> resourcesAdmins, List<User> serviceProviders, int year, int month) {
+    public Calendar(String cid, String title, List<User> clients, List<User> resourcesAdmins, List<User> serviceProviders, int year, int month) {
+        this.cid = cid;
         this.title = title;
         this.clients = clients;
         this.resourcesAdmins = resourcesAdmins;
@@ -68,4 +70,7 @@ public class Calendar {
     }
 
     // Getter and setter
+    public String getCid() {
+        return cid;
+    }
 }
