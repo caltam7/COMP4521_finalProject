@@ -23,7 +23,7 @@ public class User {
         this.username = username;
         this.permission = permission;
         this.cids = new ArrayList<>();
-        String msg = "";
+        String msg = "DEBUG: ";
         if (permission.equals(CLIENT)) {
             Log.d(msg, "client CID");
             cids.add(cid);

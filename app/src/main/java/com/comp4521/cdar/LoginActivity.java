@@ -62,7 +62,7 @@ public class LoginActivity extends AppCompatActivity {
 
                             // Use the uid from Auth as the ID for the new user
                             User newUser = new User(userAuth.getUid(), email, email, permit, cidInput.toString().trim());
-                            String msg = "";
+                            String msg = "DEBUG: ";
                             Log.d(msg, newUser.toString());
                             // Save the new user to the database
                             userRef.child(permit).child(userAuth.getUid()).setValue(newUser);
