@@ -4,18 +4,24 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 
 public class Event {
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
-    private List<User> participants;
-    private List<User> resourcesEntities;
-    private List<User> serviceProviders;
+    public static final String PENDING = "Pending";
+    public static final String APPROVED = "Approved";
+    public static final String DENIED = "Denied";
+    private LocalDateTime startTime, endTime;
+    private Duration duration;
+    private User participant, resourcesEntity, serviceProvider;
+    private String status;
 
-    public Event(LocalDateTime startTime, LocalDateTime endTime, List<User> participants, List<User> resources, List<User> serviceProviders) {
+    public Event(LocalDateTime startTime, LocalDateTime endTime, User participantUid, User resourceUid, User serviceProviderUid, String status) {
         this.startTime = startTime;
-        this.endTime = endTime;
-        this.participants = participants;
-        this.resourcesEntities = resources;
-        this.serviceProviders = serviceProviders;
+        if(endTime != null)
+            this.endTime = endTime;
+        else this.endTime = startTime.plusHours(1);
+        this.duration = Duration.between(startTime, endTime);
+        this.participant = participantUid;
+        this.resourcesEntity = resourceUid;
+        this.serviceProvider = serviceProviderUid;
+        this.status = status;
     }
 
     public LocalDateTime getStartTime() {
@@ -26,15 +32,15 @@ public class Event {
         return endTime;
     }
 
-    public List<User> getParticipants() {
-        return participants;
+    public User getParticipant() {
+        return participant;
     }
 
-    public List<User> getResourcesEntities() {
-        return resourcesEntities;
+    public User getResourcesEntity() {
+        return resourcesEntity;
     }
 
-    public List<User> getServiceProviders() {
-        return serviceProviders;
+    public User getServiceProvider() {
+        return serviceProvider;
     }
 }

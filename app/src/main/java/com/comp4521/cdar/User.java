@@ -15,27 +15,12 @@ public class User {
     private String email;
     private String username;
     private String permission;
-    private List<String> cids;
 
-    public User(String uid, String email, String username, String permission, String cid) {
+    public User(String uid, String email, String permission) {
         this.uid = uid;
         this.email = email;
-        this.username = username;
+        this.username = email.split("@")[0];
         this.permission = permission;
-        this.cids = new ArrayList<>();
-        String msg = "DEBUG: ";
-        if (permission.equals(CLIENT)) {
-            Log.d(msg, "client CID");
-            cids.add(cid);
-        }
-        else if (permission.equals(SERVICE_PROVIDER) || permission.equals(RESOURCES_ENTITY)) {
-            Log.d(msg, "random CID");
-            cids.add(UUID.randomUUID().toString());
-        }
-        else{
-            cids.add("NA");
-        }
-        Log.d(msg, "END of User()");
     }
 
     public String getUid() {

@@ -1,12 +1,12 @@
 package com.comp4521.cdar;
 
-import static com.comp4521.cdar.User.CLIENT;
+import static com.comp4521.cdar.User.SERVICE_PROVIDER;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.ParcelUuid;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -16,7 +16,12 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
+
+import java.io.Serializable;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -25,7 +30,8 @@ public class LoginActivity extends AppCompatActivity {
     private Button createButton, loginButton;
     private Spinner userPermissionInput;
     private DatabaseReference databaseRef = FirebaseDBManager.getInstance().getDatabaseRef();
-    private DatabaseReference userRef = databaseRef.child("users");;
+    private DatabaseReference userRef = databaseRef.child("users");
+    private DatabaseReference calendarRef = databaseRef.child("calendars");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,30 +54,39 @@ public class LoginActivity extends AppCompatActivity {
         // Sign Up New User
         // Adding onClickListener to sign up button
         createButton.setOnClickListener(view -> {
-            String email = emailInput.getText().toString().trim();
+            String email = emailInput.getText().toString().trim() + "@cdar.com";
             String password = userPwInput.getText().toString().trim();
             String permit = userPermissionInput.getSelectedItem().toString().trim();
+            String cid = cidInput.toString().trim();
+
+            Bundle calendarData = new Bundle();
 
             // Call createUserWithEmailAndPassword() with the user's email and password
             mAuth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this, task -> {
-                        if (task.isSuccessful()) {
+                        if (inputValidation(cid) && task.isSuccessful()) {
                             // Sign up success
                             FirebaseUser userAuth = mAuth.getCurrentUser();
                             Toast.makeText(LoginActivity.this, "Account created successfully.", Toast.LENGTH_SHORT).show();
 
                             // Use the uid from Auth as the ID for the new user
-                            User newUser = new User(userAuth.getUid(), email, email, permit, cidInput.toString().trim());
-                            String msg = "DEBUG: ";
-                            Log.d(msg, newUser.toString());
+                            User newUser = new User(userAuth.getUid(), email, permit);
                             // Save the new user to the database
                             userRef.child(permit).child(userAuth.getUid()).setValue(newUser);
-                            // Save current user's id to bundle
-                            //userData.putString("uid", userAuth.getUid());
 
-                            //jump to dashboard
+                            // if creating a SP account, create new calendar too
+                            if (permit.equals(SERVICE_PROVIDER)){
+                                UserCalendar newCalendar = new UserCalendar(newUser.getUid(),newUser.getUsername()+"'s Calendar");
+                                calendarRef.child(newCalendar.getCid()).setValue(newCalendar);
+                                calendarData.putString("calendarID", newCalendar.getCid());
+                            }
+                            else {
+                                calendarData.putString("calendarID", cid);
+                            }
+
+                            //jump to dashboard intent
                             Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
-                            //intent.putExtras(userData);
+                            intent.putExtras(calendarData);
                             startActivity(intent);
                         } else {
                             // Sign up failed
@@ -83,7 +98,7 @@ public class LoginActivity extends AppCompatActivity {
         // Login Current User
         // Set click listener for the login button
         loginButton.setOnClickListener(view -> {
-            String email = emailInput.getText().toString().trim();
+            String email = emailInput.getText().toString().trim() + "@cdar.com";
             String password = userPwInput.getText().toString().trim();
 
             // Call signInWithEmailAndPassword() with the user's email and password
@@ -106,4 +121,9 @@ public class LoginActivity extends AppCompatActivity {
         });
 
     }
+
+    public boolean inputValidation(String cid){
+        return true;
+    }
+
 }

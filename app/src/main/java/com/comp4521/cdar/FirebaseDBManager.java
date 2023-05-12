@@ -23,7 +23,7 @@ public class FirebaseDBManager {
         return dBRef;
     }
 
-    public void writeNewCalendar(Calendar cdar) {
+    public void writeNewCalendar(UserCalendar cdar) {
         DatabaseReference newCdarRef = dBRef.child("calendars").child(cdar.getCid());
         newCdarRef.setValue(cdar);
     }
