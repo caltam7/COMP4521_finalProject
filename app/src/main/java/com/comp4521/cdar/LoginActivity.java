@@ -1,7 +1,9 @@
 package com.comp4521.cdar;
 
+import static com.comp4521.cdar.User.CLIENT;
 import static com.comp4521.cdar.User.SERVICE_PROVIDER;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -9,11 +11,14 @@ import android.os.Bundle;
 import android.os.ParcelUuid;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -53,6 +58,23 @@ public class LoginActivity extends AppCompatActivity {
         createButton = findViewById(R.id.signUp_btn);
         loginButton = findViewById(R.id.login_btn);
 
+        //dynamically show cidInput
+        userPermissionInput.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selected = parent.getItemAtPosition(position).toString();
+                if (!selected.equals(SERVICE_PROVIDER)) {
+                    cidInput.setVisibility(View.VISIBLE); // show the EditText
+                } else {
+                    cidInput.setVisibility(View.GONE); // hide the EditText
+                }
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {cidInput.setVisibility(View.GONE);}
+        });
+
+        Bundle calendarData = new Bundle();
+
         // Sign Up New User
         // Adding onClickListener to sign up button
         createButton.setOnClickListener(view -> {
@@ -60,8 +82,6 @@ public class LoginActivity extends AppCompatActivity {
             String password = userPwInput.getText().toString().trim();
             String permit = userPermissionInput.getSelectedItem().toString().trim();
             String cid = cidInput.toString().trim();
-
-            Bundle calendarData = new Bundle();
 
             // Call createUserWithEmailAndPassword() with the user's email and password
             mAuth.createUserWithEmailAndPassword(email, password)
@@ -81,14 +101,15 @@ public class LoginActivity extends AppCompatActivity {
                                 UserCalendar newCalendar = new UserCalendar(userAuth.getUid(),newUser.getUsername()+"'s Calendar");
                                 String msg="newCDAR:";
                                 Log.d(msg, String.valueOf(newCalendar));
-                                calendarRef.child(newCalendar.getCid()).setValue(newCalendar);
-                                Event createdAt = new Event(LocalDateTime.now(), LocalDateTime.now().plusHours(1), "n/a", "n/a", "n/a", Event.APPROVED);
-                                calendarRef.child(newCalendar.getCid()).child("events").child(createdAt.getStartTime_str()).setValue(createdAt);
+                                calendarRef.child(userAuth.getUid()).setValue(newCalendar);
+                                Event createdAt = new Event("Created At", LocalDateTime.now(), LocalDateTime.now().plusHours(1), "n/a", "n/a", "n/a", Event.APPROVED);
+                                calendarRef.child(userAuth.getUid()).child("events").child(createdAt.getStartTime_str()).setValue(createdAt);
                                 calendarData.putString("calendarID", newCalendar.getCid());
                             }
                             else {
                                 calendarData.putString("calendarID", cid);
                             }
+                            calendarData.putString("currentUid", userAuth.getUid());
 
                             //jump to dashboard intent
                             Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
@@ -106,19 +127,50 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setOnClickListener(view -> {
             String email = emailInput.getText().toString().trim() + "@cdar.com";
             String password = userPwInput.getText().toString().trim();
+            String permit = userPermissionInput.getSelectedItem().toString().trim();
+            String cid = cidInput.toString().trim();
 
             // Call signInWithEmailAndPassword() with the user's email and password
             mAuth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this, task -> {
                         if (task.isSuccessful()) {
                             // Sign in success
-                            FirebaseUser user = mAuth.getCurrentUser();
+                            FirebaseUser userAuth = mAuth.getCurrentUser();
+                            calendarData.putString("currentUid", userAuth.getUid());
+                            String msgg="signed In";
+                            Log.d(msgg, userAuth.getUid());
                             // Do something with the signed-in user
                             Toast.makeText(LoginActivity.this, "Authentication successful.", Toast.LENGTH_SHORT).show();
 
-                            // creating new Intent and starting next activity
-                            Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
-                            startActivity(intent);
+                            // if SP, goto own calendar, else, specified by cidInput
+                            if (permit.equals(SERVICE_PROVIDER)){
+                                Task<DataSnapshot> cidTask  = calendarRef.child(userAuth.getUid()).get();
+                                cidTask.addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<DataSnapshot> task) {
+                                        String msg = "cidTask";
+                                        if (task.isSuccessful()) {
+                                            String cid = task.getResult().child("cid").getValue().toString().trim();
+                                            Log.d(msg, cid);
+                                            calendarData.putString("calendarID", cid);
+
+                                            // creating new Intent and starting next activity
+                                            Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
+                                            intent.putExtras(calendarData);
+                                            startActivity(intent);
+                                        } else {
+                                            Log.d(msg, "cidTask not completed");
+                                        }
+                                    }
+                                });
+                            }
+                            else {
+                                calendarData.putString("calendarID", cid);
+                                // creating new Intent and starting next activity
+                                Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
+                                intent.putExtras(calendarData);
+                                startActivity(intent);
+                            }
                         } else {
                             // Sign in failed
                             Toast.makeText(LoginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();

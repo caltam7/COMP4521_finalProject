@@ -13,10 +13,11 @@ public class Event {
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss");
     private LocalDateTime startTime, endTime;
     private Duration duration;
-    private String participant, resourcesEntity, serviceProvider;
+    private String eventTitle, participant, resourcesEntity, serviceProvider;
     private String status, eid;
 
-    public Event(LocalDateTime startTime, LocalDateTime endTime, String participantUid, String resourceUid, String serviceProviderUid, String status) {
+    public Event(String eventTitle, LocalDateTime startTime, LocalDateTime endTime, String participantUid, String resourceUid, String serviceProviderUid, String status) {
+        this.eventTitle = eventTitle;
         this.eid = UUID.randomUUID().toString();
         this.startTime = startTime;
         if(endTime != null)
@@ -29,6 +30,7 @@ public class Event {
         this.status = status;
     }
 
+    public String getEventTitle(){ return eventTitle;}
     public String getEid(){ return eid; }
     public LocalDateTime getStartTime() {
         return startTime;

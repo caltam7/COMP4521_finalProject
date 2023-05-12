@@ -53,15 +53,15 @@
 
     <TextView
         android:id="@+id/textView"
-        android:layout_width="55dp"
-        android:layout_height="18dp"
+        android:layout_width="107dp"
+        android:layout_height="23dp"
         android:fontFamily="sans-serif-black"
-        android:text="@string/Email"
+        android:text="@string/username"
         android:textColor="#FFFFFF"
         android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@+id/email_input"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.25"
+        app:layout_constraintHorizontal_bias="0.292"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
@@ -120,11 +120,12 @@
         android:id="@+id/cid_input"
         android:layout_width="248dp"
         android:layout_height="57dp"
-        android:ems="10"
-        android:inputType="text"
-        android:hint="CID"
-        android:textColorHint="#FFFFFF"
         android:backgroundTint="@android:color/white"
+        android:ems="10"
+        android:hint="CID"
+        android:inputType="text"
+        android:textColorHint="#FFFFFF"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/email_input"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
