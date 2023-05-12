@@ -2,4 +2,6 @@
 <resources>
     <string name="Email">Email:</string>
     <string name="Password">Password:</string>
+    <string name="Your_role">Your Role</string>
+    <string name="Venue_res">Venue / Resources</string>
 </resources>
