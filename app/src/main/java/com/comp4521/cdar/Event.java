@@ -1,18 +1,23 @@
 package com.comp4521.cdar;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 public class Event {
     public static final String PENDING = "Pending";
     public static final String APPROVED = "Approved";
     public static final String DENIED = "Denied";
+
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss");
     private LocalDateTime startTime, endTime;
     private Duration duration;
-    private User participant, resourcesEntity, serviceProvider;
-    private String status;
+    private String participant, resourcesEntity, serviceProvider;
+    private String status, eid;
 
-    public Event(LocalDateTime startTime, LocalDateTime endTime, User participantUid, User resourceUid, User serviceProviderUid, String status) {
+    public Event(LocalDateTime startTime, LocalDateTime endTime, String participantUid, String resourceUid, String serviceProviderUid, String status) {
+        this.eid = UUID.randomUUID().toString();
         this.startTime = startTime;
         if(endTime != null)
             this.endTime = endTime;
@@ -24,23 +29,27 @@ public class Event {
         this.status = status;
     }
 
+    public String getEid(){ return eid; }
     public LocalDateTime getStartTime() {
         return startTime;
+    }
+    public String getStartTime_str() {
+        return startTime.format(formatter);
     }
 
     public LocalDateTime getEndTime() {
         return endTime;
     }
 
-    public User getParticipant() {
+    public String getParticipant() {
         return participant;
     }
 
-    public User getResourcesEntity() {
+    public String getResourcesEntity() {
         return resourcesEntity;
     }
 
-    public User getServiceProvider() {
+    public String getServiceProvider() {
         return serviceProvider;
     }
 }

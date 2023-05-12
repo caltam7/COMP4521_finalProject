@@ -16,20 +16,20 @@ import java.util.UUID;
 
 public class UserCalendar {
     private String cid, ownerUid, title;
-    private Map<LocalDateTime, Event> eventList;
+    //private Map<String, Event> eventList;
 
     public UserCalendar(String cid, String uid, String title) {
         this.cid = cid;
         this.ownerUid = uid;
         this.title = title;
-        this.eventList = new HashMap<>();
+
     }
 
-    public UserCalendar(String uid, String title) {
+    public UserCalendar(String owner, String title) {
         this.cid = UUID.randomUUID().toString();
-        this.ownerUid = uid;
+        this.ownerUid = owner;
         this.title = title;
-        this.eventList = new HashMap<>();
+
     }
 
     public interface UserCalendarLoadedCallback {
@@ -45,8 +45,8 @@ public class UserCalendar {
                     cid = dataSnapshot.child("cid").getValue(String.class);
                     ownerUid = dataSnapshot.child("ownerUid").getValue(String.class);
                     title = dataSnapshot.child("title").getValue(String.class);
-                    GenericTypeIndicator<Map<LocalDateTime, Event>> typeIndicator = new GenericTypeIndicator<Map<LocalDateTime, Event>>() {};
-                    eventList = dataSnapshot.child("eventList").getValue(typeIndicator);
+                    GenericTypeIndicator<Map<String, Event>> typeIndicator = new GenericTypeIndicator<Map<String, Event>>() {};
+                    //eventList = dataSnapshot.child("eventList").getValue(typeIndicator);
 
                     if (callback != null) {
                         callback.onUserCalendarLoaded(UserCalendar.this);
@@ -70,7 +70,10 @@ public class UserCalendar {
     public String getCid() {
         return cid;
     }
-    public void putNewEvent(LocalDateTime Datetime, Event newEvent){
-        eventList.put(Datetime, newEvent);
-    }
+    public String getTitle(){ return title; }
+    public String getOwnerUid(){ return ownerUid; }
+    //public Map<String, Event> getEventList(){ return eventList; }
+    //public void putNewEvent(LocalDateTime Datetime, Event newEvent){
+    //    eventList.put(Datetime.toString(), newEvent);
+    //}
 }

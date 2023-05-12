@@ -22,6 +22,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -76,8 +78,12 @@ public class LoginActivity extends AppCompatActivity {
 
                             // if creating a SP account, create new calendar too
                             if (permit.equals(SERVICE_PROVIDER)){
-                                UserCalendar newCalendar = new UserCalendar(newUser.getUid(),newUser.getUsername()+"'s Calendar");
+                                UserCalendar newCalendar = new UserCalendar(userAuth.getUid(),newUser.getUsername()+"'s Calendar");
+                                String msg="newCDAR:";
+                                Log.d(msg, String.valueOf(newCalendar));
                                 calendarRef.child(newCalendar.getCid()).setValue(newCalendar);
+                                Event createdAt = new Event(LocalDateTime.now(), LocalDateTime.now().plusHours(1), "n/a", "n/a", "n/a", Event.APPROVED);
+                                calendarRef.child(newCalendar.getCid()).child("events").child(createdAt.getStartTime_str()).setValue(createdAt);
                                 calendarData.putString("calendarID", newCalendar.getCid());
                             }
                             else {
