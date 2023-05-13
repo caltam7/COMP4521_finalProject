@@ -1,6 +1,5 @@
 package com.comp4521.cdar;
 
-import static com.comp4521.cdar.User.CLIENT;
 import static com.comp4521.cdar.User.SERVICE_PROVIDER;
 
 import androidx.annotation.NonNull;
@@ -110,6 +109,7 @@ public class LoginActivity extends AppCompatActivity {
                                 calendarData.putString("calendarID", cid);
                             }
                             calendarData.putString("currentUid", userAuth.getUid());
+                            calendarData.putString("permit", permit);
 
                             //jump to dashboard intent
                             Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
@@ -137,6 +137,7 @@ public class LoginActivity extends AppCompatActivity {
                             // Sign in success
                             FirebaseUser userAuth = mAuth.getCurrentUser();
                             calendarData.putString("currentUid", userAuth.getUid());
+                            calendarData.putString("permit", permit);
                             String msgg="signed In";
                             Log.d(msgg, userAuth.getUid());
                             // Do something with the signed-in user
