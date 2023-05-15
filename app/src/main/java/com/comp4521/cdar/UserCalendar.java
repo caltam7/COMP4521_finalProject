@@ -36,7 +36,7 @@ public class UserCalendar {
         void onUserCalendarLoaded(UserCalendar userCalendar);
     }
 
-    public UserCalendar(String cidInput, UserCalendar.UserCalendarLoadedCallback callback) {
+    /*public UserCalendar(String cidInput, UserCalendar.UserCalendarLoadedCallback callback) {
         DatabaseReference userDataRef = FirebaseDBManager.getInstance().getDatabaseRef().child("calendars").child(cidInput);
         userDataRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -59,7 +59,7 @@ public class UserCalendar {
 
             }
         });
-    }
+    }*/
 
     public LocalDateTime millisecondsToLocalDateTime(long milliseconds) {
         Instant instant = Instant.ofEpochMilli(milliseconds);

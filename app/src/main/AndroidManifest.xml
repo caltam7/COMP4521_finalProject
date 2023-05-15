@@ -15,9 +15,6 @@
             android:name=".PendingRequestsActivity"
             android:exported="false" />
         <activity
-            android:name=".DayScheduleActivity"
-            android:exported="false" />
-        <activity
             android:name=".DashboardActivity"
             android:exported="false" />
         <activity

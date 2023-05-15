@@ -26,7 +26,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.UUID;
 
 public class LoginActivity extends AppCompatActivity {
@@ -38,6 +40,7 @@ public class LoginActivity extends AppCompatActivity {
     private DatabaseReference databaseRef = FirebaseDBManager.getInstance().getDatabaseRef();
     private DatabaseReference userRef = databaseRef.child("users");
     private DatabaseReference calendarRef = databaseRef.child("calendars");
+    private UserCalendar newCalendar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,7 +83,7 @@ public class LoginActivity extends AppCompatActivity {
             String email = emailInput.getText().toString().trim() + "@cdar.com";
             String password = userPwInput.getText().toString().trim();
             String permit = userPermissionInput.getSelectedItem().toString().trim();
-            String cid = cidInput.toString().trim();
+            String cid = cidInput.getText().toString().trim();
 
             // Call createUserWithEmailAndPassword() with the user's email and password
             mAuth.createUserWithEmailAndPassword(email, password)
@@ -97,15 +100,15 @@ public class LoginActivity extends AppCompatActivity {
 
                             // if creating a SP account, create new calendar too
                             if (permit.equals(SERVICE_PROVIDER)){
-                                UserCalendar newCalendar = new UserCalendar(userAuth.getUid(),newUser.getUsername()+"'s Calendar");
-                                String msg="newCDAR:";
-                                Log.d(msg, String.valueOf(newCalendar));
+                                newCalendar = new UserCalendar(userAuth.getUid(),newUser.getUsername()+"'s Calendar");
                                 calendarRef.child(userAuth.getUid()).setValue(newCalendar);
-                                Event createdAt = new Event("Created At", LocalDateTime.now(), LocalDateTime.now().plusHours(1), "n/a", "n/a", "n/a", Event.APPROVED);
+                                Event createdAt = new Event("Created At", "N/A", LocalDate.now(), LocalTime.now(), LocalTime.now().plusHours(1), Event.APPROVED);
                                 calendarRef.child(userAuth.getUid()).child("events").child(createdAt.getStartTime_str()).setValue(createdAt);
+                                userRef.child(permit).child(userAuth.getUid()).child("ownCalendar").setValue(newCalendar.getCid());
                                 calendarData.putString("calendarID", newCalendar.getCid());
                             }
                             else {
+                                userRef.child(permit).child(userAuth.getUid()).child("atCalendar").setValue(cid);
                                 calendarData.putString("calendarID", cid);
                             }
                             calendarData.putString("currentUid", userAuth.getUid());
@@ -128,7 +131,7 @@ public class LoginActivity extends AppCompatActivity {
             String email = emailInput.getText().toString().trim() + "@cdar.com";
             String password = userPwInput.getText().toString().trim();
             String permit = userPermissionInput.getSelectedItem().toString().trim();
-            String cid = cidInput.toString().trim();
+            String cid = cidInput.getText().toString().trim();
 
             // Call signInWithEmailAndPassword() with the user's email and password
             mAuth.signInWithEmailAndPassword(email, password)
